@@ -43,7 +43,6 @@ def sum_to_n? arr, n
     return false
   # when array contains more than 2 elements
   else
-    a = arr
     # use enumerator method to check 
     b = arr.chunk_while {|i, j| i+j == n}
     for var in b.to_a
@@ -93,7 +92,6 @@ def binary_multiple_of_4? s
   # check if the input is string
   elsif s =~ /[a-z]/ || s =~ /[A-Z]/
     asc = s.unpack("C*")            # convert string to integer
-    sum = 0
     for var in asc
       if var % 4 == 0
         return true
