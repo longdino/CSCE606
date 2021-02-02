@@ -47,7 +47,7 @@ def sum_to_n? arr, n
     b = arr.chunk_while {|i, j| i+j == n}
     for var in b.to_a
       # if variable has two elements, that means sum_to_n is possible
-      if var.length > 1 && var.length < 3
+      if var.length == 2
         return true
       end
     end
