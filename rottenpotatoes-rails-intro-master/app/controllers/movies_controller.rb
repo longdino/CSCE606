@@ -7,17 +7,27 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
-    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+    @movies = Movie.with_ratings(params[:ratings])
+    @all_ratings = Movie.all_ratings
+    
+    # Part 1: filter the list of movies by rating
+    if params[:ratings] 
+      @ratings_to_show = params[:ratings].keys
+    else
+      @ratings_to_show = @all_ratings
+    end
+    @ratings_to_show_hash = Hash[@ratings_to_show.collect {|key| [key]}]
 
+    # Part 2: sort the list of movies by title or release date
     if params[:order] == 'title'
-      @movies = Movie.order(:title)
+      @movies = @movies.order(params[:order])
       @title_header = "hilite"
     elsif params[:order] == 'release_date'
-      @movies = Movie.order(:release_date)
+      @movies = @movies.order(params[:order])
       @release_date_header ="hilite"
     else
-      @movies = Movie.all
+      #@movies = Movie.all #for part 2
+      @movies = Movie.with_ratings(params[:ratings]) # for part 1
     end
     
   end
