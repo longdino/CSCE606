@@ -7,7 +7,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    #@movies = Movie.with_ratings(params[:ratings])
+    @movies = Movie.with_ratings(params[:ratings])
     @all_ratings = Movie.all_ratings
     
     # Part 1: filter the list of movies by rating
