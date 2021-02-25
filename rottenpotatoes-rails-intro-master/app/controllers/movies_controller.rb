@@ -7,42 +7,42 @@ class MoviesController < ApplicationController
   end
 
   def index
-    #@movies = Movie.with_ratings(params[:ratings])
+    @movies = Movie.with_ratings(params[:ratings])
     @all_ratings = Movie.all_ratings
     
-    # Part 1: filter the list of movies by rating
-    if params[:ratings] 
-      @ratings_to_show = params[:ratings].keys
+    if params[:ratings]
+      @ratings_to_show = params[:ratings]
     elsif session[:ratings]
       @ratings_to_show = session[:ratings]
+    else
+      @ratings_to_show = Hash[@all_ratings.collect {|key| [key]}]
     end
-    
-    if @ratings_to_show == nil
-      @ratings_to_show = Hash[@all_ratings.collect {|key| [key, 1]}]
-    end
-    
-    @ratings_to_show_hash = Hash[@ratings_to_show.collect {|key| [key]}]
     
     if params[:order]
       sorted = params[:order]
     elsif session[:order]
       sorted = session[:order]
     end
-
-    # # Part 2: sort the list of movies by title or release date
-    if params[:order] == 'title'
-      @movies = @movies.order(params[:order])
-      @title_header = "hilite bg-warning"
-    elsif params[:order] == 'release_date'
-      @movies = @movies.order(params[:order])
-      @release_date_header ="hilite bg-warning"
-    else
-      #@movies = Movie.all #for part 2
-      @movies = Movie.with_ratings(params[:ratings]) # for part 1
+    
+    if sorted
+      if sorted == 'title'
+        ordered, @title_header = {:title => :asc}, "hilite bg-warning"
+      elsif sorted == 'release_date'
+        ordered, @release_date_header = {:release_date => :asc}, "hilite bg-warning"
+      end
     end
     
+    if params[:ratings] == nil ||
+      (params[:order] == nil && session[:order] != nil)
+      flash.keep
+      redirect_to movies_path :order => sorted, :ratings => @ratings_to_show
+    end
     
-    
+    session[:order] = sorted
+    session[:ratings] = @ratings_to_show
+
+    @movies = Movie.where(rating: @ratings_to_show.keys).order(ordered)
+
   end
 
   def new
@@ -75,6 +75,15 @@ class MoviesController < ApplicationController
 
   private
   # Making "internal" methods private is not required, but is a common practice.
+  # This helps make clear which methods respond to requests, and which ones do not.
+  def movie_params
+    params.require(:movie).permit(:title, :rating, :description, :release_date)
+  end
+end
+elease_date)
+  end
+end
+but is a common practice.
   # This helps make clear which methods respond to requests, and which ones do not.
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
