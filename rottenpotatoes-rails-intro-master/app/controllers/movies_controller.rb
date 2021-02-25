@@ -21,10 +21,10 @@ class MoviesController < ApplicationController
     # Part 2: sort the list of movies by title or release date
     if params[:order] == 'title'
       @movies = @movies.order(params[:order])
-      @title_header = "hilite"
+      @title_header = "hilite bg-warning"
     elsif params[:order] == 'release_date'
       @movies = @movies.order(params[:order])
-      @release_date_header ="hilite"
+      @release_date_header ="hilite bg-warning"
     else
       #@movies = Movie.all #for part 2
       @movies = Movie.with_ratings(params[:ratings]) # for part 1
