@@ -7,7 +7,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.with_ratings(params[:ratings])
+    #@movies = Movie.with_ratings(params[:ratings])
     @all_ratings = Movie.all_ratings
     
     if params[:ratings]
@@ -75,15 +75,6 @@ class MoviesController < ApplicationController
 
   private
   # Making "internal" methods private is not required, but is a common practice.
-  # This helps make clear which methods respond to requests, and which ones do not.
-  def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date)
-  end
-end
-elease_date)
-  end
-end
-but is a common practice.
   # This helps make clear which methods respond to requests, and which ones do not.
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
