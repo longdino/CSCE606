@@ -16,11 +16,7 @@ class MoviesController < ApplicationController
     else
       @ratings_to_show = Hash[@all_ratings.map {|key| [key, 1]}]
     end
-    
-    if @ratings_to_show == nil
-      @ratings_to_show = Hash[@all_ratings.collect {|key| [key]}]
-    end
-    
+   
     if params[:order]
       sorted = params[:order]
     elsif session[:order]
@@ -35,18 +31,16 @@ class MoviesController < ApplicationController
       end
     end
     
-    if params[:ratings] == nil ||
+    if (params[:ratings] == nil && session[:order] != nil) ||
       (params[:order] == nil && session[:order] != nil)
       flash.keep
       redirect_to movies_path :order => sorted, :ratings => @ratings_to_show and return
-    else
-      session.clear
     end
+    
+    @movies = Movie.where(rating: @ratings_to_show.keys).order(ordered)
     
     session[:order] = sorted
     session[:ratings] = @ratings_to_show
-
-    @movies = Movie.where(rating: @ratings_to_show.keys).order(ordered)
 
   end
 
